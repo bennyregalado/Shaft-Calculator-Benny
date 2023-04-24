@@ -1,4 +1,4 @@
-function [dn, D, r, kt, kts, Kf, Kfs] = shaft(M, T, sut)
+function [dn, D, rn, kt, kts, Kf, Kfs, se,ny] = shaft(M, T, sut, sy)
 % All parameters, inputs and outputs are in English Units
 % Input:
 % M: Maximum Moment on the shaft 
@@ -37,8 +37,8 @@ function [dn, D, r, kt, kts, Kf, Kfs] = shaft(M, T, sut)
 n = 2;
 a = 2.7;
 b = -0.265;
-ka = a*(sut/10^-3)^b;
-do = 1; % This will be the initial diameter that will be used as a guess
+ka = a*(sut*10^-3)^b;
+do = .5; % This will be the initial diameter that will be used as a guess
 kb = 0.897*(do)^(-0.107);
 kc = 1;
 TF = 482;
@@ -56,12 +56,14 @@ Kfs = kts;
 sigma_ap = Kf*(32*M*10^(-3)/pi);
 sigma_pp = sqrt(3)*Kfs*(32*T*10^(-3)/pi);
 do = ((sigma_ap/(se)+sigma_pp/(sut))*n)^(1/3);
+ro = .05*do;
+D = 1.1*do;
 % While loop for final calculations
 z = 1 - (1 / 1.1);
 sqrt_a = 0.246 - (3.08 * 10^-3) * (sut * 10^-3) + (1.51 * 10^-5) * (sut * 10^-3)^2 - (2.67 * 10^-8) * (sut * 10^-3)^3;
 sqrt_as = 0.19 - (2.51 * 10^-3) * (sut * 10^-3) + (1.35 * 10^-5) * (sut * 10^-3)^2 - (2.67 * 10^-8) * (sut * 10^-3)^3;
 error = 1;
-error_1 = 0.01;
+error_1 = 0.001;
 % While loop to calculate the final calculations
 while error > error_1
     y = ro/do;
@@ -91,9 +93,12 @@ while error > error_1
     % Calculate new diameter using the Distortion Energy Goodman Theory
     sigma_ap = Kf*(32*M*10^(-3)/pi);
     sigma_pp = sqrt(3)*Kfs*(32*T*10^(-3)/pi);
-    do = ((sigma_ap/(se)+sigma_pp/(sut))*n)^(1/3);
+    dn = ((sigma_ap/(se)+sigma_pp/(sut))*n)^(1/3);
+    D = 1.1*dn;
+    rn = .05*dn;
     error = abs((do-dn)/dn);
     do = dn;
     ro=rn;
+    ny = ((sy*10^-3)/(sigma_ap+sigma_pp));
 end
 end
