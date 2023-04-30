@@ -34,11 +34,11 @@ Afterwards, it assumes that the Static Notch Stress concentration for Bending is
 # Inputs:
   Material Properties of material of choice 
   
-  sut: Ultimate Tensile Strength (line 10)
+  sut: Ultimate Tensile Strength [ksi] (line 10)
   
-  sy: Yielding Strength (line 11)
+  sy: Yielding Strength [ksi] (line 11)
   
-  E: Elastic Modulus (line 12)
+  E: Elastic Modulus [psi] (line 12)
   
   Geometry
   
